@@ -1,20 +1,15 @@
-from models import User
 from sqlalchemy.orm import Session
+from models import User
 
+def create_user(db: Session, user):
+    new_user = User(name=user.name, email=user.email)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
 
+def get_all_users(db: Session):
+    return db.query(User).all()
 
-class UserRepo:
-    def __init__(self, db: Session):
-        self.db = db
-
-    def add_user(self, user: User):
-        self.db.add(user)
-        self.db.commit()
-        return user
-    
-    
-    def get_user_by_id(self, id: int):
-        return self.db.query(User).filter(User.id == id).first()
-    def get_all_users(self):
-        return self.db.query(User).all()
-    
+def get_user_by_id(db: Session, user_id: int):
+    return db.query(User).filter(User.id == user_id).first()
